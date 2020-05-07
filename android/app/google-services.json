@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "375785631540",
+    "firebase_url": "https://taskito-f30dc.firebaseio.com",
+    "project_id": "taskito-f30dc",
+    "storage_bucket": "taskito-f30dc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:375785631540:android:5e8fc63b1c5ab1c27bbf61",
+        "android_client_info": {
+          "package_name": "com.example.taskito"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "375785631540-l82k9j2v709dte0elvpnrpom9ma7l68h.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNWUdHOT8u2o3Sy8oxSxowlRyoRiS7DIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "375785631540-l82k9j2v709dte0elvpnrpom9ma7l68h.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
