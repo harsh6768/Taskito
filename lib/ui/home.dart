@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:taskito/modules/home/bloc/home_bloc.dart';
-import 'package:taskito/modules/task/bloc/task_bloc.dart';
 import 'package:taskito/routes.dart';
-import 'package:taskito/ui/new_task.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -16,37 +12,15 @@ class _HomeState extends State<Home> {
   static var formatter = DateFormat('yyyy-MM-dd');
   var todayDate = formatter.format(now);
 
-  addTask() {
-    print('inside addtask');
-    HomeBloc().add(AddTaskEvent());
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: Routes.getRoute(),
       home: Scaffold(
-          body: BlocListener(
-        bloc: HomeBloc(),
-        listener: (BuildContext context, HomeState state) {
-          // if (state is NavigateTaskState) {
-          //   print('inside userListSate to navigate');
-          //   // Navigator.of(context).pushNamed('/add_task');
-          //   Navigator.of(context).push(
-          //     MaterialPageRoute(
-          //       builder: (context) => BlocProvider<TaskBloc>(
-          //         create: (context) => TaskBloc()..add(FirebaseDataInitialEvent()),
-          //         child: NewTask(),
-          //       ),
-          //     ),
-          //   );
-          // }
-        },
-        child: BlocBuilder(
-          bloc: HomeBloc(),
-          builder: (context, state) {
-            return SingleChildScrollView(
+        body: LayoutBuilder(
+          builder: (context, contraints) {
+           return  SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   Container(
@@ -112,19 +86,9 @@ class _HomeState extends State<Home> {
                           ],
                         ),
                         GestureDetector(
-                          onTap: () async {
+                          onTap: () {
                             print('insdie ontap method');
-                            // addTask();
-                            // Navigator.of(context).pushNamed('/add_task');
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => BlocProvider<TaskBloc>(
-                                  create: (BuildContext context) => TaskBloc()
-                                    ..add(FirebaseDataInitialEvent()),
-                                  child: NewTask(),
-                                ),
-                              ),
-                            );
+                            Navigator.of(context).pushNamed('/add_task');
                           },
                           child: Container(
                             padding: EdgeInsets.all(6.0),
@@ -156,7 +120,7 @@ class _HomeState extends State<Home> {
             );
           },
         ),
-      )),
+      ),
     );
   }
 }

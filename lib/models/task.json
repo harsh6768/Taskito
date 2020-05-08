@@ -1,0 +1,13 @@
+{
+    "name":"harsh",
+    "person_list":[{
+        "image_url":"https://localhost:6000/image_url.jpg",
+        "name":"harsh",
+        "is_selected":false
+    }],
+    "date":"12/13/24",
+    "start_time":"12:00AM",
+    "end_time":"11:00 AM",
+    "description":"add new task",
+    "category_selected":"RUNNING"
+}
