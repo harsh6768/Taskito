@@ -27,3 +27,22 @@ Future<bool> addNewTaskFirebase(Task newTask) async {
 
   return true;
 }
+
+
+Future<dynamic> getAllTasks() async {
+  List<PersonDetail> personList = List<PersonDetail>();
+
+  FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
+
+  var snapshot = await firebaseDatabase.reference().child('tasks').once();
+
+  print(snapshot.value);
+
+  // for (var snap in snapshot.value) {
+  //   var person = PersonDetail(
+  //       imageUrl: snap['image_url'], name: snap['name'], isSelected: false);
+  //   personList.add(person);
+  // }
+  // return personList;
+  return snapshot.value;
+}

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskito/models/new_task.dart';
 import 'package:taskito/models/person_detail.dart';
-import 'package:taskito/modules/task/bloc/task_bloc.dart';
 import 'package:taskito/services/fire_storage.dart';
 
 class NewTask extends StatefulWidget {
@@ -100,10 +99,6 @@ class _NewTaskState extends State<NewTask> {
       //   );
       // },
     );
-  }
-
-  categorySelected(int category) {
-    TaskBloc().add(CategoryEvent(categoryType: category));
   }
 
   List<PersonDetail> personDetailList = List<PersonDetail>();
