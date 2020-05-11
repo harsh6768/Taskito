@@ -5,7 +5,7 @@ class PersonDetail {
 
   PersonDetail({this.imageUrl, this.name,this.isSelected});
 
-  PersonDetail.fromJson(Map<String, dynamic> json) {
+  PersonDetail.fromJson(Map<dynamic, dynamic> json) {
     imageUrl = json['image_url'];
     name = json['name'];
     isSelected=json['is_selected'];

@@ -2,7 +2,7 @@ import 'package:taskito/models/person_detail.dart';
 class Task {
   
   String name;
-  List<PersonDetail> personList;
+  List<dynamic> personList;
   String date;
   String startTime;
   String endTime;
@@ -18,7 +18,7 @@ class Task {
       this.description,
       this.categorySelected});
 
-  Task.fromJson(Map<String, dynamic> json) {
+  Task.fromJson(Map<dynamic, dynamic> json) {
     name = json['name'];
     if (json['person_list'] != null) {
       personList =  List<PersonDetail>();
