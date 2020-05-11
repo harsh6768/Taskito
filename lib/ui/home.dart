@@ -49,10 +49,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
       _allPages.add(dayAndDate);
 
-      var todaysTaks = TasksOfDay();
-      _allTodaysTask.add(todaysTaks);
+      var formatter = DateFormat('yyyy-MM-dd');
+      var currentDate = formatter.format(day);
+      // print(">>>>>>>>>>>>>>>>>>>>>>>>>>");
+      // print(currentDate);
 
-      print(todayDay);
+      var todaysTaks = TasksOfDay(todayDate: currentDate);
+      _allTodaysTask.add(todaysTaks);
     }
   }
 
@@ -117,7 +120,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  'May 01,2020',
+                                  todayDate,
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: Color.fromRGBO(12, 33, 77, 0.5),
@@ -170,24 +173,27 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                   backgroundColor: Colors.white,
                   snap: true,
                   floating: true,
-                  // expandedHeight: 80.0,
+                  // expandedHeight: 20.0,
                   // **Is it intended ?** flexibleSpace.title overlaps with tabs title.
                   // flexibleSpace: FlexibleSpaceBar(
                   //   title: Text("FlexibleSpace title"),
                   // ),
 
-                  bottom: TabBar(
-                    controller: _tabController,
-                    isScrollable: true,
-                    labelColor: Colors.red,
-                    indicatorColor: Colors.blue,
-                    tabs: _allPages
-                        .map(
-                          (p) => Tab(
-                            child: p,
-                          ),
-                        )
-                        .toList(),
+                  bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(1.0),
+                    child: TabBar(
+                      controller: _tabController,
+                      isScrollable: true,
+                      labelColor: Color.fromRGBO(90, 85, 202, 1.0),
+                      indicatorColor: Color.fromRGBO(90, 85, 202, 1.0),
+                      tabs: _allPages
+                          .map(
+                            (p) => Tab(
+                              child: p,
+                            ),
+                          )
+                          .toList(),
+                    ),
                   ),
                 ),
                 SliverFillRemaining(
@@ -216,16 +222,30 @@ class DayAndDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Text(abrDay, style: TextStyle(fontSize: 14)),
-        Text(todayDate, style: TextStyle(fontSize: 14)),
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          // padding: EdgeInsets.all(1.0),
+          // width: MediaQuery.of(context).size.width / 7,
+          child: Column(
+            children: <Widget>[
+              Text(abrDay, style: TextStyle(fontSize: 10)),
+              SizedBox(
+                height: 5.0,
+              ),
+              Text(todayDate, style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        );
+      },
     );
   }
 }
 
 class TasksOfDay extends StatefulWidget {
+  final String todayDate;
+  TasksOfDay({this.todayDate});
+
   @override
   _TasksOfDayState createState() => _TasksOfDayState();
 }
@@ -233,195 +253,203 @@ class TasksOfDay extends StatefulWidget {
 class _TasksOfDayState extends State<TasksOfDay> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        children: <Widget>[
-          FutureBuilder(
-            future: getAllTasks(),
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData) {
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  child: ListView.builder(
-                    itemCount: snapshot.data.length,
-                    itemBuilder: (context, index) {
-                      var data = snapshot.data[index];
-                      var color = data.categorySelected == 'URGENT'
-                          ? Color.fromRGBO(255, 102, 0, 0.7)
-                          : data.categorySelected == 'RUNNING'
-                              ? Color.fromRGBO(44, 192, 156, 1.0)
-                              : Color.fromRGBO(90, 85, 202, 1.0);
-                      print('snapshot data');
-                      print(data);
-                      return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.0),
-                        ),
-                        elevation: 4,
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            left: 8.0,
-                            right: 4.0,
-                            top: 8.0,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            child: FutureBuilder(
+              future: getAllTasks(widget.todayDate),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height,
+                    child: ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        var data = snapshot.data[index];
+                        var color = data.categorySelected == 'URGENT'
+                            ? Color.fromRGBO(255, 102, 0, 0.7)
+                            : data.categorySelected == 'RUNNING'
+                                ? Color.fromRGBO(44, 192, 156, 1.0)
+                                : Color.fromRGBO(90, 85, 202, 1.0);
+                        // print('snapshot data');
+                        // print(data);
+                        return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                          height: 160,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                data.categorySelected,
-                                style: TextStyle(
-                                  color: color,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(
-                                  right: 8.0,
-                                ),
-                                height: 1.0,
-                                color: Color.fromRGBO(238, 240, 242, 1.0),
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Container(
-                                    margin: EdgeInsets.only(top: 8.0),
-                                    decoration: BoxDecoration(
-                                      border: Border(
-                                        left: BorderSide(
-                                          color: color,
-                                          width: 4.0,
-                                        ),
-                                      ),
-                                    ),
-                                    child: Container(
-                                      margin: EdgeInsets.only(left: 8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                          Container(
-                                            margin:
-                                                EdgeInsets.only(bottom: 5.0),
-                                            child: Text(
-                                              data.name,
-                                              style: TextStyle(
-                                                  color: Color.fromRGBO(
-                                                    11,
-                                                    32,
-                                                    76,
-                                                    1.0,
-                                                  ),
-                                                  fontSize: 20.0,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Text(
-                                            data.description,
-                                            style: TextStyle(
-                                              color: Color.fromRGBO(
-                                                201,
-                                                206,
-                                                217,
-                                                1.0,
-                                              ),
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                          elevation: 4,
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: 8.0,
+                              right: 4.0,
+                              top: 8.0,
+                            ),
+                            height: 160,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  data.categorySelected,
+                                  style: TextStyle(
+                                    color: color,
+                                    fontSize: 18.0,
                                   ),
-                                  Container(
-                                    height: 25,
-                                    width: 25,
-                                    child:
-                                        Image.asset('assets/images/menu.png'),
-                                  )
-                                ],
-                              ),
-                              SizedBox(
-                                height: 30.0,
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(right: 8.0),
-                                child: Row(
+                                ),
+                                SizedBox(
+                                  height: 10.0,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                    right: 8.0,
+                                  ),
+                                  height: 1.0,
+                                  color: Color.fromRGBO(238, 240, 242, 1.0),
+                                ),
+                                Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
-                                    Row(
-                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          margin: EdgeInsets.only(right: 8.0),
-                                          height: 25,
-                                          width: 25,
-                                          child: Image.asset(
-                                              'assets/images/clock.png'),
+                                    Container(
+                                      margin: EdgeInsets.only(top: 8.0),
+                                      decoration: BoxDecoration(
+                                        border: Border(
+                                          left: BorderSide(
+                                            color: color,
+                                            width: 4.0,
+                                          ),
                                         ),
-                                        Text(
-                                          '10-11AM',
-                                          style: TextStyle(fontSize: 16.0),
-                                        )
-                                      ],
-                                    ),
-                                    Row(
-                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          margin: EdgeInsets.only(right: 8.0),
-                                          height: 25,
-                                          width: 25,
-                                          child: Image.asset(
-                                              'assets/images/group.png'),
+                                      ),
+                                      child: Container(
+                                        margin: EdgeInsets.only(left: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: <Widget>[
+                                            Container(
+                                              margin:
+                                                  EdgeInsets.only(bottom: 5.0),
+                                              child: Text(
+                                                data.name,
+                                                style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                      11,
+                                                      32,
+                                                      76,
+                                                      1.0,
+                                                    ),
+                                                    fontSize: 20.0,
+                                                    fontWeight:
+                                                        FontWeight.bold),
+                                              ),
+                                            ),
+                                            Text(
+                                              data.description,
+                                              style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                  201,
+                                                  206,
+                                                  217,
+                                                  1.0,
+                                                ),
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        Text(
-                                          '${data.personList.length} Persons',
-                                          style: TextStyle(fontSize: 16.0),
-                                        )
-                                      ],
+                                      ),
                                     ),
-                                    Row(
-                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(
-                                          margin: EdgeInsets.only(right: 8.0),
-                                          height: 25,
-                                          width: 25,
-                                          child: Image.asset(
-                                              'assets/images/share.png'),
-                                        ),
-                                        Text(
-                                          'Share',
-                                          style: TextStyle(fontSize: 16.0),
-                                        )
-                                      ],
-                                    ),
+                                    Container(
+                                      height: 25,
+                                      width: 25,
+                                      child:
+                                          Image.asset('assets/images/menu.png'),
+                                    )
                                   ],
                                 ),
-                              )
-                            ],
+                                SizedBox(
+                                  height: 30.0,
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(right: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Row(
+                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 8.0),
+                                            height: 25,
+                                            width: 25,
+                                            child: Image.asset(
+                                                'assets/images/clock.png'),
+                                          ),
+                                          Text(
+                                            '10-11AM',
+                                            style: TextStyle(fontSize: 16.0),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 8.0),
+                                            height: 25,
+                                            width: 25,
+                                            child: Image.asset(
+                                                'assets/images/group.png'),
+                                          ),
+                                          Text(
+                                            '${data.personList.length} Persons',
+                                            style: TextStyle(fontSize: 16.0),
+                                          )
+                                        ],
+                                      ),
+                                      Row(
+                                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(right: 8.0),
+                                            height: 25,
+                                            width: 25,
+                                            child: Image.asset(
+                                                'assets/images/share.png'),
+                                          ),
+                                          Text(
+                                            'Share',
+                                            style: TextStyle(fontSize: 16.0),
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              } else {
-                return Container(
-                  height: 100.0,
-                  child: CircularProgressIndicator(),
-                );
-              }
-            },
+                        );
+                      },
+                    ),
+                  );
+                } else {
+                  return Container(
+                    height: 400,
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Color.fromRGBO(90, 85, 202, 1.0),
+                      ),
+                    ),
+                  );
+                }
+              },
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

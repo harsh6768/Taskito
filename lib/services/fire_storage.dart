@@ -11,14 +11,14 @@ Future<List<PersonDetail>> getFirebaseStorageFiles() async {
 
   var snapshot = await firebaseDatabase.reference().child('persons').once();
 
-  print(snapshot.value);
+  // print(snapshot.value);
 
   for (var snap in snapshot.value) {
     var person = PersonDetail(
         imageUrl: snap['image_url'], name: snap['name'], isSelected: false);
     personList.add(person);
   }
-  return personList;
+  return Future.value(personList);
 }
 
 Future<bool> addNewTaskFirebase(Task newTask) async {
@@ -30,15 +30,15 @@ Future<bool> addNewTaskFirebase(Task newTask) async {
   return true;
 }
 
-Future<List<Task>> getAllTasks() async {
-
+Future<List<Task>> getAllTasks(var date) async {
   print("date::::>>>>>>>>>>>>>>");
-  // print(date);
+  print(date);
 
   List<Task> taskList = List<Task>();
 
   FirebaseDatabase firebaseDatabase = FirebaseDatabase.instance;
 
+  // var snapshot = await firebaseDatabase.reference().child('tasks').once();
   var snapshot = await firebaseDatabase.reference().child('tasks').once();
 
   // print(snapshot.value);
@@ -48,21 +48,26 @@ Future<List<Task>> getAllTasks() async {
     var snap = snapshot.value[key];
     // print('snap values');
     // print(snap);
-
-    var task = Task(
-      name: snap['name'],
-      date: snap['date'],
-      startTime: snap['start_time'],
-      endTime: snap['end_time'],
-      description: snap['description'],
-      categorySelected: snap['category_selected'],
-      personList: snap['person_list'],
-    );
+    var checkDate = snap['date'].toString().split(' ')[0];
+    var isDiffDays = date.compareTo(checkDate);
+    // print('Date---->>>>>>>>>>>>>>>>>>>>>>>>>');
+    // print(isDiffDays);
+    if (isDiffDays == 0) {
+      var task = Task(
+        name: snap['name'],
+        date: snap['date'],
+        startTime: snap['start_time'],
+        endTime: snap['end_time'],
+        description: snap['description'],
+        categorySelected: snap['category_selected'],
+        personList: snap['person_list'],
+      );
+      taskList.add(task);
+    }
 
     // var task=Task.fromJson(jsonEncode(snap));
     // print(task);
 
-    taskList.add(task);
   }
   // taskList = List<Task>.from(
   //   snapshot.value.map(

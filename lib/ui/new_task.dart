@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:taskito/models/new_task.dart';
 import 'package:taskito/models/person_detail.dart';
@@ -190,8 +191,30 @@ class _NewTaskState extends State<NewTask> {
     );
 
     bool isInserted = await addNewTaskFirebase(newTask);
-
+    if (isInserted) {
+      displayDialog();
+    }
     print('data inserted successfully');
+  }
+
+  void displayDialog() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => new CupertinoAlertDialog(
+        title: Text("Message"),
+        content: Padding(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            child: new Text("Data Inserted Successfully!")),
+        actions: [
+          CupertinoDialogAction(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              isDefaultAction: true,
+              child: new Text("Close"))
+        ],
+      ),
+    );
   }
 
   @override
@@ -286,10 +309,17 @@ class _NewTaskState extends State<NewTask> {
                             ),
                           ),
                           child: TextField(
+                            style: TextStyle(
+                              color: Color.fromRGBO(90, 85, 202, 1.0),
+                            ),
                             controller: _taskNameController,
                             decoration: new InputDecoration(
                               border: InputBorder.none,
                               hintText: 'Your Task Name',
+                              hintStyle: TextStyle(
+                                fontSize: 16.0,
+                                color: Color.fromRGBO(90, 85, 202, 0.5),
+                              ),
                             ),
                           ),
                         ),
@@ -308,13 +338,17 @@ class _NewTaskState extends State<NewTask> {
                             ),
                           ),
                         ),
-                        personDetailList.length > 0
-                            ? Container(
+                        FutureBuilder(
+                          future: getFirebaseStorageFiles(),
+                          builder:
+                              (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              return Container(
                                 height: 80.0,
                                 margin: EdgeInsets.only(left: 16.0),
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  itemCount: personDetailList.length,
+                                  itemCount: snapshot.data.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
                                     return GestureDetector(
@@ -325,56 +359,149 @@ class _NewTaskState extends State<NewTask> {
                                                   .isSelected;
                                         });
                                       },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            color: personDetailList[index]
-                                                    .isSelected
-                                                ? Color.fromRGBO(
-                                                    90, 85, 202, 1.0)
-                                                : Colors.white10,
-                                            borderRadius:
-                                                BorderRadius.circular(8.0)),
-                                        height: 80,
-                                        width: 60,
-                                        padding: EdgeInsets.only(
-                                          top: 4,
-                                        ),
-                                        margin: EdgeInsets.only(
-                                          // left: 4.0,
-                                          right: 8.0,
-                                          top: 8,
-                                        ),
-                                        child: Column(
-                                          children: <Widget>[
-                                            CircleAvatar(
-                                              backgroundColor: Color.fromRGBO(
-                                                  243, 231, 253, 1.0),
-                                              radius: 25.0,
-                                              child: Container(
-                                                height: 40,
-                                                width: 40,
-                                                child: Image.network(
-                                                    personDetailList[index]
-                                                        .imageUrl),
-                                              ),
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              // color: personDetailList[index]
+                                              //       .isSelected
+                                              //   ? Color.fromRGBO(
+                                              //       90, 85, 202, 0.7)
+                                              //   : Colors.white10,
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
                                             ),
-                                            Text(
-                                              personDetailList[index].name,
-                                              style: TextStyle(
-                                                fontSize: 15.0,
-                                                color: Color.fromRGBO(
-                                                    192, 199, 213, 1.0),
-                                              ),
-                                            )
-                                          ],
-                                        ),
+                                            height: 80,
+                                            width: 60,
+                                            padding: EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            margin: EdgeInsets.only(
+                                              // left: 4.0,
+                                              right: 8.0,
+                                              top: 8,
+                                            ),
+                                            child: Column(
+                                              children: <Widget>[
+                                                CircleAvatar(
+                                                  backgroundColor:
+                                                      Color.fromRGBO(
+                                                          243, 231, 253, 1.0),
+                                                  radius: 25.0,
+                                                  child: Container(
+                                                    height: 40,
+                                                    width: 40,
+                                                    child: Image.network(
+                                                        personDetailList[index]
+                                                            .imageUrl),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  personDetailList[index].name,
+                                                  style: TextStyle(
+                                                    fontSize: 15.0,
+                                                    color: Color.fromRGBO(
+                                                        192, 199, 213, 1.0),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: personDetailList[index]
+                                                      .isSelected
+                                                  ? Color.fromRGBO(
+                                                      90, 85, 202, 0.7)
+                                                  : Colors.white10,
+                                              borderRadius:
+                                                  BorderRadius.circular(50.0),
+                                              boxShadow: personDetailList[index]
+                                                      .isSelected
+                                                  ? [
+                                                      BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.5),
+                                                        spreadRadius: 5,
+                                                        blurRadius: 7,
+                                                        offset: Offset(
+                                                          0,
+                                                          3,
+                                                        ), // changes position of shadow
+                                                      ),
+                                                    ]
+                                                  : null,
+                                            ),
+                                            height: 80,
+                                            width: 60,
+                                            padding: EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            margin: EdgeInsets.only(
+                                              // left: 4.0,
+                                              right: 8.0,
+                                              top: 8,
+                                            ),
+                                            child: personDetailList[index]
+                                                    .isSelected
+                                                ? Center(
+                                                    child: Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox(
+                                                    height: 10.0,
+                                                  ),
+                                          ),
+                                          Container(
+                                            // foregroundDecoration: BoxDecoration(
+                                            //   color: personDetailList[index]
+                                            //           .isSelected
+                                            //       ? Color.fromRGBO(
+                                            //           90, 85, 202, 0.7)
+                                            //       : Colors.white10,
+                                            //   borderRadius:
+                                            //       BorderRadius.circular(16.0),
+                                            // ),
+                                            height: 80,
+                                            width: 60,
+                                            padding: EdgeInsets.only(
+                                              top: 4,
+                                            ),
+                                            margin: EdgeInsets.only(
+                                              // left: 4.0,
+                                              right: 8.0,
+                                              top: 8,
+                                            ),
+                                            child: personDetailList[index]
+                                                    .isSelected
+                                                ? Center(
+                                                    child: Icon(
+                                                      Icons.check,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                : SizedBox(
+                                                    height: 10.0,
+                                                  ),
+                                          )
+                                        ],
                                       ),
                                     );
                                   },
-                                ))
-                            : Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                                ),
+                              );
+                            } else {
+                              return Container(
+                                child: CircularProgressIndicator(
+                                  backgroundColor:
+                                      Color.fromRGBO(90, 85, 202, 0.5),
+                                ),
+                              );
+                            }
+                          },
+                        ),
                         Container(
                           padding: EdgeInsets.only(
                             left: 16.0,
@@ -393,6 +520,9 @@ class _NewTaskState extends State<NewTask> {
                         Container(
                           padding: EdgeInsets.only(left: 16, right: 16),
                           child: TextField(
+                            style: TextStyle(
+                              color: Color.fromRGBO(90, 85, 202, 1.0),
+                            ),
                             controller: _datePickerController,
                             decoration: InputDecoration(
                               suffixIcon: InkWell(
@@ -447,6 +577,9 @@ class _NewTaskState extends State<NewTask> {
                                     padding:
                                         EdgeInsets.only(left: 16, right: 16),
                                     child: TextField(
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(90, 85, 202, 1.0),
+                                      ),
                                       controller: _startTimePickerController,
                                       // cursorColor: AppColors.primaryRed,
                                       decoration: InputDecoration(
@@ -497,6 +630,9 @@ class _NewTaskState extends State<NewTask> {
                                     padding:
                                         EdgeInsets.only(left: 16, right: 16),
                                     child: TextField(
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(90, 85, 202, 1.0),
+                                      ),
                                       controller: _endTimePickerController,
                                       // cursorColor: AppColors.primaryRed,
                                       decoration: InputDecoration(
@@ -542,9 +678,16 @@ class _NewTaskState extends State<NewTask> {
                                 ),
                               ),
                               TextField(
+                                style: TextStyle(
+                                  color: Color.fromRGBO(90, 85, 202, 1.0),
+                                ),
                                 controller: _descriptionController,
                                 decoration: InputDecoration(
                                   hintText: "description",
+                                  hintStyle: TextStyle(
+                                    fontSize: 16.0,
+                                    color: Color.fromRGBO(90, 85, 202, 0.5),
+                                  ),
                                 ),
                               ),
                             ],
@@ -573,57 +716,138 @@ class _NewTaskState extends State<NewTask> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              MaterialButton(
-                                color: isUrgent
-                                    ? Color.fromRGBO(255, 102, 0, 0.7)
-                                    : Color.fromRGBO(240, 211, 212, 1.0),
-                                child: Text(
-                                  'URGENT',
-                                  style: TextStyle(
+                              Stack(
+                                children: <Widget>[
+                                  MaterialButton(
                                     color: isUrgent
-                                        ? Colors.white
-                                        : Color.fromRGBO(241, 142, 127, 1.0),
+                                        ? Color.fromRGBO(255, 102, 0, 0.7)
+                                        : Color.fromRGBO(240, 211, 212, 1.0),
+                                    child: Text(
+                                      'URGENT',
+                                      style: TextStyle(
+                                        color: isUrgent
+                                            ? Colors.white
+                                            : Color.fromRGBO(
+                                                241, 142, 127, 1.0),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      print('category method called');
+                                      onCategorySelect(0);
+                                    },
                                   ),
-                                ),
-                                onPressed: () async {
-                                  print('category method called');
-                                  onCategorySelect(0);
-                                },
+                                  isUrgent
+                                      ? Positioned(
+                                          right: 1.0,
+                                          top: 4.0,
+                                          child: CircleAvatar(
+                                            backgroundColor: Color.fromRGBO(
+                                                255, 102, 0, 1.0),
+                                            radius: 10.0,
+                                            child: IconButton(
+                                              padding: EdgeInsets.all(3.0),
+                                              onPressed: () {},
+                                              iconSize: 15.0,
+                                              icon: Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          height: 10.0,
+                                        ),
+                                ],
                               ),
-                              MaterialButton(
-                                color: isRunning
-                                    ? Color.fromRGBO(44, 192, 156, 1.0)
-                                    : Color.fromRGBO(179, 230, 204, 1.0),
-                                // disabledColor: Color.fromRGBO(240, 211, 212, 1.0),
-                                child: Text(
-                                  'RUNNING',
-                                  style: TextStyle(
+                              Stack(
+                                children: <Widget>[
+                                  MaterialButton(
                                     color: isRunning
-                                        ? Colors.white
-                                        : Color.fromRGBO(102, 204, 153, 1.0),
+                                        ? Color.fromRGBO(44, 192, 156, 1.0)
+                                        : Color.fromRGBO(179, 230, 204, 1.0),
+                                    // disabledColor: Color.fromRGBO(240, 211, 212, 1.0),
+                                    child: Text(
+                                      'RUNNING',
+                                      style: TextStyle(
+                                        color: isRunning
+                                            ? Colors.white
+                                            : Color.fromRGBO(
+                                                102, 204, 153, 1.0),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      print('category method called');
+                                      onCategorySelect(1);
+                                    },
                                   ),
-                                ),
-                                onPressed: () async {
-                                  print('category method called');
-                                  onCategorySelect(1);
-                                },
+                                  isRunning
+                                      ? Positioned(
+                                          right: 1.0,
+                                          top: 4.0,
+                                          child: CircleAvatar(
+                                            backgroundColor: Color.fromRGBO(
+                                                44, 192, 156, 1.0),
+                                            radius: 10.0,
+                                            child: IconButton(
+                                              padding: EdgeInsets.all(3.0),
+                                              onPressed: () {},
+                                              iconSize: 15.0,
+                                              icon: Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          height: 10.0,
+                                        ),
+                                ],
                               ),
-                              MaterialButton(
-                                color: isOngoing
-                                    ? Color.fromRGBO(90, 85, 202, 1.0)
-                                    : Color.fromRGBO(225, 228, 248, 1.0),
-                                child: Text(
-                                  'ONGOING',
-                                  style: TextStyle(
+                              Stack(
+                                children: <Widget>[
+                                  MaterialButton(
                                     color: isOngoing
-                                        ? Colors.white
-                                        : Color.fromRGBO(132, 130, 216, 1.0),
+                                        ? Color.fromRGBO(90, 85, 202, 1.0)
+                                        : Color.fromRGBO(225, 228, 248, 1.0),
+                                    child: Text(
+                                      'ONGOING',
+                                      style: TextStyle(
+                                        color: isOngoing
+                                            ? Colors.white
+                                            : Color.fromRGBO(
+                                                132, 130, 216, 1.0),
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      print('category method called');
+                                      onCategorySelect(2);
+                                    },
                                   ),
-                                ),
-                                onPressed: () async {
-                                  print('category method called');
-                                  onCategorySelect(2);
-                                },
+                                  isOngoing
+                                      ? Positioned(
+                                          right: 1.0,
+                                          top: 4.0,
+                                          child: CircleAvatar(
+                                            backgroundColor: Color.fromRGBO(
+                                                90, 85, 202, 1.0),
+                                            radius: 10.0,
+                                            child: IconButton(
+                                              padding: EdgeInsets.all(3.0),
+                                              onPressed: () {},
+                                              iconSize: 15.0,
+                                              icon: Icon(
+                                                Icons.check,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                          height: 10.0,
+                                        ),
+                                ],
                               )
                             ],
                           ),
