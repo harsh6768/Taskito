@@ -120,7 +120,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  todayDate,
+                                  'May 01,2020',
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     color: Color.fromRGBO(12, 33, 77, 0.5),
@@ -255,27 +255,27 @@ class _TasksOfDayState extends State<TasksOfDay> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Container(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: FutureBuilder(
-              future: getAllTasks(widget.todayDate),
-              builder: (BuildContext context, AsyncSnapshot snapshot) {
-                if (snapshot.hasData) {
-                  return Container(
-                    height: MediaQuery.of(context).size.height,
-                    child: ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        var data = snapshot.data[index];
-                        var color = data.categorySelected == 'URGENT'
-                            ? Color.fromRGBO(255, 102, 0, 0.7)
-                            : data.categorySelected == 'RUNNING'
-                                ? Color.fromRGBO(44, 192, 156, 1.0)
-                                : Color.fromRGBO(90, 85, 202, 1.0);
-                        // print('snapshot data');
-                        // print(data);
-                        return Card(
+        return SingleChildScrollView(
+          child: FutureBuilder(
+            future: getAllTasks(widget.todayDate),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: ListView.builder(
+                    itemCount: snapshot.data.length,
+                    itemBuilder: (context, index) {
+                      var data = snapshot.data[index];
+                      var color = data.categorySelected == 'URGENT'
+                          ? Color.fromRGBO(255, 102, 0, 0.7)
+                          : data.categorySelected == 'RUNNING'
+                              ? Color.fromRGBO(44, 192, 156, 1.0)
+                              : Color.fromRGBO(90, 85, 202, 1.0);
+                      // print('snapshot data');
+                      // print(data);
+                      return Container(
+                        margin: EdgeInsets.only(left: 4.0, right: 4.0),
+                        child: Card(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(15.0),
                           ),
@@ -431,22 +431,22 @@ class _TasksOfDayState extends State<TasksOfDay> {
                               ],
                             ),
                           ),
-                        );
-                      },
+                        ),
+                      );
+                    },
+                  ),
+                );
+              } else {
+                return Container(
+                  height: 400,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Color.fromRGBO(90, 85, 202, 1.0),
                     ),
-                  );
-                } else {
-                  return Container(
-                    height: 400,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Color.fromRGBO(90, 85, 202, 1.0),
-                      ),
-                    ),
-                  );
-                }
-              },
-            ),
+                  ),
+                );
+              }
+            },
           ),
         );
       },

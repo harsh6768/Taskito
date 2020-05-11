@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:taskito/models/new_task.dart';
 import 'package:taskito/models/person_detail.dart';
 import 'package:taskito/services/fire_storage.dart';
@@ -26,6 +27,9 @@ class _NewTaskState extends State<NewTask> {
   TimeOfDay startTimeOfDay;
   TimeOfDay endTimeOfDay;
   var tadaysDate;
+  static var now = DateTime.now();
+  static var formatter = DateFormat.yMMMMd('en_US');
+  var hintDate = formatter.format(now);
 
   void callStartTimePicker() async {
     startTimeOfDay = await getStartTime();
@@ -38,14 +42,14 @@ class _NewTaskState extends State<NewTask> {
 
   Future<TimeOfDay> getStartTime() async {
     final TimeOfDay timeOfDay = await showTimePicker(
-      builder: (BuildContext context, Widget child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: true,
-          ),
-          child: child,
-        );
-      },
+      // builder: (BuildContext context, Widget child) {
+      //   return MediaQuery(
+      //     data: MediaQuery.of(context).copyWith(
+      //       alwaysUse24HourFormat: true,
+      //     ),
+      //     child: child,
+      //   );
+      // },
       context: context,
       initialTime: TimeOfDay.now(),
     );
@@ -63,14 +67,6 @@ class _NewTaskState extends State<NewTask> {
 
   Future<TimeOfDay> getEndTime() async {
     final TimeOfDay timeOfDay = await showTimePicker(
-      builder: (BuildContext context, Widget child) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: true,
-          ),
-          child: child,
-        );
-      },
       context: context,
       initialTime: TimeOfDay.now(),
     );
@@ -90,7 +86,7 @@ class _NewTaskState extends State<NewTask> {
     return showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
+      firstDate: DateTime.now().subtract(Duration(days: 1)),
       lastDate: DateTime(2030),
       // builder: (BuildContext context, Widget child) {
       //   return Theme(
@@ -542,7 +538,7 @@ class _NewTaskState extends State<NewTask> {
                                   ),
                                 ),
                               ),
-                              hintText: 'May 01,2020',
+                              hintText: hintDate,
                               hintStyle: TextStyle(
                                 fontSize: 16.0,
                                 color: Color.fromRGBO(90, 85, 202, 1.0),
