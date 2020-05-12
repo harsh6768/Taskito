@@ -360,23 +360,23 @@ class _TasksOfDayState extends State<TasksOfDay> {
                               : Color.fromRGBO(90, 85, 202, 1.0);
                       // print('snapshot data');
                       // print(data);
-                      var startTimeOfDay = data.startTime;
-                      startTimeOfDay =
-                          startTimeOfDay.split('TimeOfDay(').join();
-                      startTimeOfDay = startTimeOfDay.split(')').join();
-                      startTimeOfDay = TimeOfDay(
-                              hour: int.parse(startTimeOfDay.split(":")[0]),
-                              minute: int.parse(startTimeOfDay.split(":")[1]))
-                          .format(context);
+                      // var startTimeOfDay = data.startTime;
+                      // startTimeOfDay =
+                      //     startTimeOfDay.split('TimeOfDay(').join();
+                      // startTimeOfDay = startTimeOfDay.split(')').join();
+                      // startTimeOfDay = TimeOfDay(
+                      //         hour: int.parse(startTimeOfDay.split(":")[0]),
+                      //         minute: int.parse(startTimeOfDay.split(":")[1]))
+                      //     .format(context);
 
-                      var endTimeOfDay = data.endTime;
-                      endTimeOfDay = endTimeOfDay.split('TimeOfDay(').join();
-                      endTimeOfDay = endTimeOfDay.split(')').join();
-                      // endTimeOfDay=endTimeOfDay.split(':');
-                      endTimeOfDay = TimeOfDay(
-                              hour: int.parse(endTimeOfDay.split(":")[0]),
-                              minute: int.parse(endTimeOfDay.split(":")[1]))
-                          .format(context);
+                      // var endTimeOfDay = data.endTime;
+                      // endTimeOfDay = endTimeOfDay.split('TimeOfDay(').join();
+                      // endTimeOfDay = endTimeOfDay.split(')').join();
+                      // // endTimeOfDay=endTimeOfDay.split(':');
+                      // endTimeOfDay = TimeOfDay(
+                      //         hour: int.parse(endTimeOfDay.split(":")[0]),
+                      //         minute: int.parse(endTimeOfDay.split(":")[1]))
+                      //     .format(context);
 
                       // print('>>>>>>>>>>>>>>>> $startTimeOfDay $endTimeOfDay');
                       return Container(
@@ -502,7 +502,7 @@ class _TasksOfDayState extends State<TasksOfDay> {
                                       ),
                                       Text(
                                         // '${data.startTime}-${data.endTime}',
-                                        '$startTimeOfDay-$endTimeOfDay',
+                                        '${data.startTime}-${data.endTime}',
                                         style: TextStyle(fontSize: 14.0),
                                       )
                                     ],

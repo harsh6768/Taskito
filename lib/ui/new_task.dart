@@ -150,13 +150,15 @@ class _NewTaskState extends State<NewTask> {
     }
   }
 
-  addTaskToFirebase() async {
+  addTaskToFirebase(BuildContext context) async {
     // CircularProgressIndicator();
     String taskName = _taskNameController.value.text;
     String description = _descriptionController.value.text;
     String todaysDate = tadaysDate.toString();
-    String startTime = startTimeOfDay.toString();
-    String endTime = endTimeOfDay.toString();
+    String startTime = startTimeOfDay.format(context).toString();
+    String endTime = endTimeOfDay.format(context).toString();
+    print('>>>>>> $startTimeOfDay $endTimeOfDay');
+
 
     List<PersonDetail> personDetails = List<PersonDetail>();
     //to get the selected person for the project
@@ -843,7 +845,7 @@ class _NewTaskState extends State<NewTask> {
                         ),
                         GestureDetector(
                           onTap: () async {
-                            addTaskToFirebase();
+                            addTaskToFirebase(context);
                           },
                           child: Container(
                             margin: EdgeInsets.only(
