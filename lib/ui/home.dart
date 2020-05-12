@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
+import 'package:share/share.dart';
 import 'package:taskito/models/new_task.dart';
 import 'package:taskito/routes.dart';
 import 'package:taskito/services/fire_storage.dart';
@@ -338,6 +340,16 @@ class TasksOfDay extends StatefulWidget {
 }
 
 class _TasksOfDayState extends State<TasksOfDay> {
+  shareData(BuildContext context, var data) {
+    final RenderBox box = context.findRenderObject();
+
+    Share.share(
+      "Tasks Name",
+      subject: 'Tasks',
+      sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -358,27 +370,9 @@ class _TasksOfDayState extends State<TasksOfDay> {
                           : data.categorySelected == 'RUNNING'
                               ? Color.fromRGBO(44, 192, 156, 1.0)
                               : Color.fromRGBO(90, 85, 202, 1.0);
-                      // print('snapshot data');
-                      // print(data);
-                      // var startTimeOfDay = data.startTime;
-                      // startTimeOfDay =
-                      //     startTimeOfDay.split('TimeOfDay(').join();
-                      // startTimeOfDay = startTimeOfDay.split(')').join();
-                      // startTimeOfDay = TimeOfDay(
-                      //         hour: int.parse(startTimeOfDay.split(":")[0]),
-                      //         minute: int.parse(startTimeOfDay.split(":")[1]))
-                      //     .format(context);
+                      var person =
+                          data.personList.length > 1 ? 'Persons' : 'Person';
 
-                      // var endTimeOfDay = data.endTime;
-                      // endTimeOfDay = endTimeOfDay.split('TimeOfDay(').join();
-                      // endTimeOfDay = endTimeOfDay.split(')').join();
-                      // // endTimeOfDay=endTimeOfDay.split(':');
-                      // endTimeOfDay = TimeOfDay(
-                      //         hour: int.parse(endTimeOfDay.split(":")[0]),
-                      //         minute: int.parse(endTimeOfDay.split(":")[1]))
-                      //     .format(context);
-
-                      // print('>>>>>>>>>>>>>>>> $startTimeOfDay $endTimeOfDay');
                       return Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -474,10 +468,56 @@ class _TasksOfDayState extends State<TasksOfDay> {
                                     ),
                                   ),
                                 ),
-                                Container(
-                                  height: 25,
-                                  width: 25,
-                                  child: Image.asset('assets/images/menu.png'),
+                                GestureDetector(
+                                  onTap: () => PopupMenuButton<int>(
+                                    itemBuilder: (context) => [
+                                      PopupMenuItem(
+                                        value: 1,
+                                        child: Text(
+                                          "Earth",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 2,
+                                        child: Text(
+                                          "Moon",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 3,
+                                        child: Text(
+                                          "Sun",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w700),
+                                        ),
+                                      ),
+                                    ],
+                                    child: Container(
+                                      height: 50,
+                                      width: 200,
+                                      decoration: ShapeDecoration(
+                                        color: Colors.green,
+                                        shape: StadiumBorder(
+                                          side: BorderSide(
+                                              color: Colors.black, width: 2),
+                                        ),
+                                      ),
+                                      child: Icon(Icons.airplanemode_active),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    height: 25,
+                                    width: 25,
+                                    child:
+                                        Image.asset('assets/images/menu.png'),
+                                  ),
                                 )
                               ],
                             ),
@@ -518,26 +558,36 @@ class _TasksOfDayState extends State<TasksOfDay> {
                                             'assets/images/group.png'),
                                       ),
                                       Text(
-                                        '${data.personList.length} Persons',
+                                        '${data.personList.length} $person',
                                         style: TextStyle(fontSize: 14.0),
                                       )
                                     ],
                                   ),
-                                  Row(
-                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      Container(
-                                        margin: EdgeInsets.only(right: 8.0),
-                                        height: 20,
-                                        width: 20,
-                                        child: Image.asset(
-                                            'assets/images/share.png'),
-                                      ),
-                                      Text(
-                                        'Share',
-                                        style: TextStyle(fontSize: 14.0),
-                                      )
-                                    ],
+                                  Builder(
+                                    builder: (BuildContext context) {
+                                      return GestureDetector(
+                                        onTap: () {
+                                          shareData(context, data);
+                                        },
+                                        child: Row(
+                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Container(
+                                              margin:
+                                                  EdgeInsets.only(right: 8.0),
+                                              height: 20,
+                                              width: 20,
+                                              child: Image.asset(
+                                                  'assets/images/share.png'),
+                                            ),
+                                            Text(
+                                              'Share',
+                                              style: TextStyle(fontSize: 14.0),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ],
                               ),
