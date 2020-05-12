@@ -88,13 +88,6 @@ class _NewTaskState extends State<NewTask> {
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(Duration(days: 1)),
       lastDate: DateTime(2030),
-      // builder: (BuildContext context, Widget child) {
-      //   return Theme(
-      //     data: ThemeData(
-      //         textTheme: TextTheme(title: TextStyle(color: AppColors.white))),
-      //     child: child,
-      //   );
-      // },
     );
   }
 

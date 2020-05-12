@@ -60,7 +60,7 @@ Future<List<Task>> getAllTasks(var date) async {
         endTime: snap['end_time'],
         description: snap['description'],
         categorySelected: snap['category_selected'],
-        personList: snap['person_list'],
+        personList: snap['person_list'].length >0 ? snap['person_list'] : [] ,
       );
       taskList.add(task);
     }
