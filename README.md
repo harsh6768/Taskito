@@ -7,6 +7,13 @@
 
 # taskito
 
+<img src="https://github.com/harsh6768/Taskito/blob/master/Upload%20Images/home1.jpeg" alt="" 
+width="250" height="450" >.........................
+<img src="https://github.com/harsh6768/Taskito/blob/master/Upload%20Images/home2.jpeg" alt="" width="250" height="450" >
+............ 
+<img src="https://github.com/harsh6768/Taskito/blob/master/Upload%20Images/new_task.jpeg" alt="" width="250" height="450" >........................
+<img src="https://github.com/harsh6768/Taskito/blob/master/Upload%20Images/new_task1.jpeg" alt="" width="250" height="450" >
+
 A new Flutter project.
 
 ## Getting Started
